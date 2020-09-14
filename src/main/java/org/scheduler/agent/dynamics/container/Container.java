@@ -4,6 +4,8 @@ import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
+import org.scheduler.util.Draw2DObjects;
+
 /**
  * Container model
  * originates from T.I. Fossen's MSS Toolsuite container.m
@@ -49,7 +51,7 @@ public class Container {
 		}
 		System.out.println(container.getContainerState());
 		
-//		Draw2DObjects app = new Draw2DObjects(list);
+		Draw2DObjects app = new Draw2DObjects(list);
 	}
 
 /*
@@ -102,8 +104,17 @@ public class Container {
    private ContainerState state;
    private ContainerInput ui;
 	
-   
    public void step() {
+	   for(int i = 0; i<10; i++) {
+		   step(0.2);
+	   }
+   }
+   
+   /**
+    * 
+    * @param sampleTime_sec - the sample time (sec)
+    */
+   public void step(double sampleTime_sec) {
 	   //if U <= 0,error('The ship must have speed greater than zero');end
 	   //if x(10) <= 0,error('The propeller rpm must be greater than zero');end
 	   if(state.u == 0)
@@ -274,17 +285,17 @@ public class Container {
 		                              delta_dot ,
 		                                n_dot          };
 		
-		// integrate
-		state.u += result[0];
-		state.v += result[1];
-		state.r += result[2];
-		state.x += result[3];
-		state.y += result[4];
-		state.psi += result[5];
-		state.p = result[6];
-		state.phi = result[7];
-		state.delta += result[8];
-		state.n += result[9];
+	   	// integrate
+		state.u += (result[0] * sampleTime_sec);
+		state.v += (result[1]* sampleTime_sec);
+		state.r += (result[2]* sampleTime_sec);
+		state.x += (result[3]* sampleTime_sec);
+		state.y += (result[4]* sampleTime_sec);
+		state.psi += (result[5]* sampleTime_sec);
+		state.p = (result[6]* sampleTime_sec);
+		state.phi = (result[7]* sampleTime_sec);
+		state.delta += (result[8]* sampleTime_sec);
+		state.n += (result[9]* sampleTime_sec);
 		
 	}
 

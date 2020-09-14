@@ -4,6 +4,8 @@ import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
+import org.scheduler.util.Draw2DObjects;
+
 /**
  * Tanker model
  * originates from T.I. Fossen's MSS Toolsuite tanker.m
@@ -45,7 +47,7 @@ public class Tanker {
 		}
 		System.out.println(tanker.getTankerState());
 		
-		//Draw2DObjects app = new Draw2DObjects(list);
+		Draw2DObjects app = new Draw2DObjects(list);
 	}
 /*
 		% function [xdot,U] = tanker(x,ui)
@@ -122,6 +124,16 @@ public class Tanker {
    }
    
    public void step() {
+	   for(int i = 0; i<10; i++) {
+		   step(0.2);
+	   }
+   }
+   
+   /**
+    * 
+    * @param sampleTime_sec - the sample time (sec)
+    */
+   public void step(double sampleTime_sec) {
 		//% Additional terms in shallow water
 		double z = T/(ui.getH() - T);
 		if (ui.getH()<18.5)
@@ -197,14 +209,14 @@ public class Tanker {
 //		% delta = actual rudder angle               (rad)
 //		% n     = actual shaft velocity             (rpm)          - nominal propeller 80 rpm
 		
-		state.u += result[0];
-		state.v += result[1];
-		state.r += result[2];
-		state.x += result[3];
-		state.y += result[4];
-		state.psi += result[5];
-		state.delta += result[6];
-		state.n += result[7];
+		state.u += (result[0] * sampleTime_sec);
+		state.v += (result[1] * sampleTime_sec);
+		state.r += (result[2] * sampleTime_sec);
+		state.x += (result[3] * sampleTime_sec);
+		state.y += (result[4] * sampleTime_sec);
+		state.psi += (result[5] * sampleTime_sec);
+		state.delta += (result[6] * sampleTime_sec);
+		state.n += (result[7] * sampleTime_sec);
 		
 	}
 
