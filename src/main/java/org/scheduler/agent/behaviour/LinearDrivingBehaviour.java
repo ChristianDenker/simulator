@@ -8,9 +8,6 @@ import org.scheduler.Tick;
 import org.scheduler.agent.Agent;
 import org.scheduler.agent.state.ShipState;
 
-import net.sf.geographiclib.Geodesic;
-import net.sf.geographiclib.GeodesicData;
-
 /** LinearDrivingBehaviour
  * 
  * Sailes ship as set in given shipState

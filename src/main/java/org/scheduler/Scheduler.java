@@ -100,8 +100,8 @@ public class Scheduler implements Runnable {
 				localDateTime_current = localDateTime_current.with(tick.getTemporalAdjuster());
 				
 				long time_left_ns = (Instant.now().toEpochMilli() - start.toEpochMilli()) * 1_000_000;
-				if(schedulerConfiguration.getSimulationSpeed() < 1000 && ((timeToAdd_ns / schedulerConfiguration.getSimulationSpeed()) - time_left_ns) > 0) {
-					TimeUnit.NANOSECONDS.sleep( (long)((timeToAdd_ns / schedulerConfiguration.getSimulationSpeed()) - time_left_ns)  );
+				if(schedulerConfiguration.getSimulationSpeed() < 1000 && (timeToAdd_ns - time_left_ns) > 0) {
+					TimeUnit.NANOSECONDS.sleep( (long)((timeToAdd_ns - time_left_ns) / schedulerConfiguration.getSimulationSpeed()) );
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();

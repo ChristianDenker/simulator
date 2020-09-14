@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.scheduler.Scheduler;
 import org.scheduler.Tick;
 import org.scheduler.TickAnswer;
