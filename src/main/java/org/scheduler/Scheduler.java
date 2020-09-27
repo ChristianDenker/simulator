@@ -33,7 +33,7 @@ public class Scheduler implements Runnable {
 		System.out.println("## Ship Simulation ##");
 
 		double freq = 1;
-		double simulationSpeed = 999+1;
+		double simulationSpeed = 1;
 		Scheduler scheduler = new Scheduler(new SchedulerConfiguration(freq, simulationSpeed));
 
 //		Point startPoint = new GeometryBuilder(DefaultGeographicCRS.WGS84).createPoint(8, 54);
