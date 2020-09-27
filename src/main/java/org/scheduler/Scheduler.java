@@ -129,7 +129,11 @@ public class Scheduler implements Runnable {
 		}
 	}
 
-	private void registerAgent(Agent agent) {
+	/** register an {@link Agent} with this Scheduler
+	 * 
+	 * @param agent
+	 */
+	public void registerAgent(Agent agent) {
 		registeredAgents.add(agent);
 	}
 
