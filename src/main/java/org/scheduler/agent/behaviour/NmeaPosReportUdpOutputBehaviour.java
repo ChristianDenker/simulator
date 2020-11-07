@@ -64,12 +64,12 @@ public class NmeaPosReportUdpOutputBehaviour implements ITickExecution {
 	        msg1.setUserId(shipState.getMMSI());
 	        msg1.setNavStatus(0);
 	        msg1.setRot(0);
-	        msg1.setSog((int)(shipState.getSpeed_kn() * 10));
+	        msg1.setSog((int)(shipState.getSpeed_current_kn() * 10));
 	        msg1.setPosAcc(1);
 	        AisPosition pos = new AisPosition(Position.create(shipState.getPoint().getY(), shipState.getPoint().getX()));
 	        msg1.setPos(pos);
-	        msg1.setCog((int)(shipState.getHeading_deg() * 10));
-	        msg1.setTrueHeading((int)(shipState.getHeading_deg() * 1));
+	        msg1.setCog((int)(shipState.getHeading_current_deg() * 10));
+	        msg1.setTrueHeading((int)(shipState.getHeading_current_deg() * 1));
 	        msg1.setUtcSec(42);
 	        msg1.setSpecialManIndicator(0);
 	        msg1.setSpare(0);

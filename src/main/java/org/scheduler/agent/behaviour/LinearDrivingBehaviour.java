@@ -35,9 +35,9 @@ public class LinearDrivingBehaviour implements ITickExecution {
 		lt = (LocalTime) tick.getTemporalAdjuster().adjustInto(lt);
 		long milliOfDay = lt.toNanoOfDay() / 1_000_000;
 		
-		double distance_per_s =  (shipState.getSpeed_kn() * 1.852 / 3.6 );
+		double distance_per_s =  (shipState.getSpeed_current_kn() * 1.852 / 3.6 );
 		double distance_per_time = distance_per_s  * milliOfDay/1000;
-		geoCalc.setDirection(shipState.getHeading_deg(), distance_per_time);
+		geoCalc.setDirection(shipState.getHeading_current_deg(), distance_per_time);
 		
 		//System.out.println("distance_per_s: " + distance_per_s +" > distance per time: " + distance_per_time);
 

@@ -26,29 +26,31 @@ public class Container {
 		ContainerState state = new ContainerState();
 		state.x=1500;
 		state.y=1500;
-//		state.u = 0.0001;
+		state.u = 12;
 
-		ContainerInput ui = new ContainerInput(Math.toRadians(10), 160);
+		ContainerInput ui = new ContainerInput(Math.toRadians(0), 160);
 		Container container = new Container(state, ui);
 		
 		ArrayList<Shape> list = new ArrayList<>();
 		
 		System.out.println(state);
 		double pixelFactor = 5;
-		for(int i = 0; i< 100; i++) {
+		for(int i = 0; i< 50; i++) {
 			System.out.println(container.getContainerState().getX() + ", "+ container.getContainerState().getY());
 			Ellipse2D point = new Ellipse2D.Double(container.getContainerState().getX()/pixelFactor,container.getContainerState().getY()/pixelFactor, 1, 1);
 			list.add(point);
 			container.step();
 		}
-		ui.setDelta_c(Math.toRadians(-10));
-		ui.setN_c(100);
+		ui.setDelta_c(Math.toRadians(10));
+		ui.setN_c(160);
 		for(int i = 0; i< 3800; i++) {
 			System.out.println(container.getContainerState().getX() + ", "+ container.getContainerState().getY());
 			Ellipse2D point = new Ellipse2D.Double(container.getContainerState().getX()/pixelFactor,container.getContainerState().getY()/pixelFactor, 1, 1);
 			list.add(point);
 			container.step();
 		}
+		
+		ui.setDelta_c(Math.toRadians(0));
 		System.out.println(container.getContainerState());
 		
 		Draw2DObjects app = new Draw2DObjects(list);
