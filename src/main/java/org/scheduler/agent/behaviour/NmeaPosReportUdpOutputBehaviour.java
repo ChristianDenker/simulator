@@ -118,7 +118,7 @@ public class NmeaPosReportUdpOutputBehaviour implements ITickExecution {
 			}
 		}
 		/** store previous position **/
-		previousPosition = shipState.getPoint();
+		previousPosition = (Point2D) shipState.getPoint().clone();
 	}
 
 	@Override
