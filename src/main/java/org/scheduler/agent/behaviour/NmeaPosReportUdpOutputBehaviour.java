@@ -9,7 +9,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.geotools.referencing.GeodeticCalculator;
+import org.apache.sis.referencing.CommonCRS;
+import org.apache.sis.referencing.GeodeticCalculator;
 import org.scheduler.Tick;
 import org.scheduler.agent.Agent;
 import org.scheduler.agent.state.ShipState;
@@ -40,7 +41,7 @@ public class NmeaPosReportUdpOutputBehaviour implements ITickExecution {
 	private DatagramPacket packet = null;
 
 	private Point2D previousPosition = null;
-	private GeodeticCalculator geoCalc = new GeodeticCalculator();
+	private GeodeticCalculator geoCalc = GeodeticCalculator.create(CommonCRS.WGS84.geographic());
 
 	/**
 	 * Ctor
@@ -79,10 +80,10 @@ public class NmeaPosReportUdpOutputBehaviour implements ITickExecution {
 			
 			if (previousPosition != null) {
 				/** calculate CoG **/
-				geoCalc.setStartingGeographicPoint(previousPosition);
-				geoCalc.setDestinationGeographicPoint(shipState.getPoint());
-				double azimuth = geoCalc.getAzimuth();
-				if(azimuth < 0) azimuth = 360 - (azimuth * -1); 
+				geoCalc.setStartGeographicPoint(previousPosition.getY(), previousPosition.getX());
+				geoCalc.setEndGeographicPoint(shipState.getPoint().getY(), shipState.getPoint().getX());
+				double azimuth = geoCalc.getStartingAzimuth();
+				if(azimuth < 0) azimuth = 360 - (azimuth * -1);
 				msg1.setCog((int) (azimuth * 10));
 			} else {
 				/** CoG == CtW/Heading **/

@@ -16,7 +16,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.opengis.referencing.FactoryException;
 import org.scheduler.agent.Agent;
 import org.scheduler.agent.behaviour.LinearDrivingBehaviour;
 import org.scheduler.agent.behaviour.NmeaPosReportUdpOutputBehaviour;
@@ -29,7 +28,7 @@ import org.scheduler.agent.state.ShipState;
  */
 public class Scheduler implements Runnable {
 	
-	public static void main(String[] args) throws FactoryException {
+	public static void main(String[] args) {
 		System.out.println("## Ship Simulation ##");
 
 		double freq = 1;

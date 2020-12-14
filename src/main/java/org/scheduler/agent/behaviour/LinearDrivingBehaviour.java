@@ -3,7 +3,9 @@ package org.scheduler.agent.behaviour;
 import java.awt.geom.Point2D;
 import java.time.LocalTime;
 
-import org.geotools.referencing.GeodeticCalculator;
+import org.apache.sis.referencing.CommonCRS;
+import org.apache.sis.referencing.GeodeticCalculator;
+import org.opengis.geometry.DirectPosition;
 import org.scheduler.Tick;
 import org.scheduler.agent.Agent;
 import org.scheduler.agent.state.ShipState;
@@ -19,7 +21,7 @@ public class LinearDrivingBehaviour implements ITickExecution {
 
 	private ShipState shipState = null;
 	
-	private GeodeticCalculator geoCalc = new GeodeticCalculator();
+	private GeodeticCalculator geoCalc = GeodeticCalculator.create(CommonCRS.WGS84.geographic());
 
 	@SuppressWarnings("unused")
 	private Agent agent = null;
@@ -30,22 +32,22 @@ public class LinearDrivingBehaviour implements ITickExecution {
 
 	@Override
 	public void execute(Tick tick) {
-		geoCalc.setStartingGeographicPoint(shipState.getPoint());
+		geoCalc.setStartGeographicPoint(shipState.getPoint().getY(), shipState.getPoint().getX());
 		LocalTime lt = LocalTime.of(0,0,0,0);
 		lt = (LocalTime) tick.getTemporalAdjuster().adjustInto(lt);
 		long milliOfDay = lt.toNanoOfDay() / 1_000_000;
 		
 		double distance_per_s =  (shipState.getSpeed_current_kn() * 1.852 / 3.6 );
 		double distance_per_time = distance_per_s  * milliOfDay/1000;
-		geoCalc.setDirection(shipState.getHeading_current_deg(), distance_per_time);
+		geoCalc.setStartingAzimuth(shipState.getHeading_current_deg());
+		geoCalc.setGeodesicDistance(distance_per_time);
 		
 		//System.out.println("distance_per_s: " + distance_per_s +" > distance per time: " + distance_per_time);
 
-		Point2D destination = geoCalc.getDestinationGeographicPoint();
-		shipState.getPoint().setLocation(destination);
-		//shipState.setPoint(destination);
+		shipState.setHeading_current_deg( (geoCalc.getEndingAzimuth() + 540 + 180) % 360 );
+		DirectPosition destination = geoCalc.getEndPoint();
+		shipState.getPoint().setLocation(new Point2D.Double(destination.getOrdinate(1),destination.getOrdinate(0)));
 		
-		//System.out.println(destination);
 	}
 
 	@Override
