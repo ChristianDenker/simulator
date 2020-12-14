@@ -20,7 +20,7 @@ public class ApplicationCPA {
 		System.out.println("## Ship Simulation ##");
 
 		double freq = 1;
-		double simulationSpeed = 1;
+		double simulationSpeed = 100;
 		Scheduler scheduler = new Scheduler(new SchedulerConfiguration(freq, simulationSpeed));
 
 		/** Ship A **/
@@ -58,7 +58,7 @@ public class ApplicationCPA {
 			geoCalc.setEndGeographicPoint(position2.getY(), position2.getX());
 			
 			double distance = geoCalc.getGeodesicDistance();
-			double azi =  geoCalc.getConstantAzimuth();//ConstantAzimuth();
+			double azi =  geoCalc.getStartingAzimuth();
 			azi = (azi + 540 + 180) % 360;
 			azi = Math.toRadians(azi);
 			
