@@ -131,5 +131,7 @@ public class ContainerState {
 				+ p + ", phi=" + phi + ", delta=" + delta + ", n=" + n + "]";
 	}
 
-	
+	public ContainerState clone() {
+		return new ContainerState(this.u, this.v, this.r, this.x, this.y, this.psi, this.p, this.phi, this.delta, this.n);
+	}
 }

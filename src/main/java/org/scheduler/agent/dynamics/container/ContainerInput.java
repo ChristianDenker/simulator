@@ -34,4 +34,7 @@ public class ContainerInput {
 		this.n_c = n_c;
 	}
 	
+	public ContainerInput clone() {
+		return new ContainerInput(this.delta_c, this.n_c);
+	}
 }

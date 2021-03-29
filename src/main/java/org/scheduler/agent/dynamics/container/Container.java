@@ -232,7 +232,8 @@ public class Container {
 	  
 	   double KT     = 0.527 - 0.455*J; 
 	   double uR     = uP*epsilon*Math.sqrt(1 + 8*kk*KT/(Math.PI*Math.pow(J,2)));
-	   double alphaR = delta + Math.atan(vR/uR);
+	   double alphaR = delta + StrictMath.atan(vR/uR);
+	   
 	   double FN     = - ((6.13*Delta)/(Delta + 2.25))*(AR/Math.pow(L,2))*(Math.pow(uR,2) + Math.pow(vR,2))*Math.sin(alphaR);
 	   T      = 2*rho*Math.pow(D,4)/(Math.pow(U,2)*Math.pow(L,2)*rho)*KT*n*Math.abs(n);
 	   
@@ -302,6 +303,16 @@ public class Container {
 	}
 
    public ContainerState getContainerState() {
-	   return state;
+	   return this.state;
+   }
+   
+   public ContainerInput getContainerInput() {
+	   return this.ui;
+   }
+   
+   public Container clone() {
+	   ContainerState clonedState = this.state.clone();
+	   ContainerInput clonedInput = this.ui.clone();
+	   return new Container(clonedState, clonedInput);   
    }
 }

@@ -15,19 +15,21 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.EventBusException;
 import org.greenrobot.eventbus.Subscribe;
 import org.scheduler.agent.Agent;
 import org.scheduler.agent.behaviour.LinearDrivingBehaviour;
 import org.scheduler.agent.behaviour.NmeaPosReportUdpOutputBehaviour;
 import org.scheduler.agent.state.ShipState;
 
-/** Scheduler
+/**
+ * Scheduler
  * 
  * @author chris
  *
  */
 public class Scheduler implements Runnable {
-	
+
 	public static void main(String[] args) {
 		System.out.println("## Ship Simulation ##");
 
@@ -36,24 +38,26 @@ public class Scheduler implements Runnable {
 		Scheduler scheduler = new Scheduler(new SchedulerConfiguration(freq, simulationSpeed));
 
 //		Point startPoint = new GeometryBuilder(DefaultGeographicCRS.WGS84).createPoint(8, 54);
-		ShipState shipStateA = new ShipState(111111111, new Point2D.Double(8,54), 90, 10);
-		scheduler.registerAgent(new Agent(scheduler, new LinearDrivingBehaviour(shipStateA), new NmeaPosReportUdpOutputBehaviour(shipStateA, 2947)));
+		ShipState shipStateA = new ShipState(111111111, new Point2D.Double(8, 54), 90, 10);
+		scheduler.registerAgent(new Agent(scheduler, new LinearDrivingBehaviour(shipStateA),
+				new NmeaPosReportUdpOutputBehaviour(shipStateA, 2947)));
 
-		ShipState shipStateB = new ShipState(222222222, new Point2D.Double(8.16,53.9), 0, 10);
-		scheduler.registerAgent(new Agent(scheduler, new LinearDrivingBehaviour(shipStateB), new NmeaPosReportUdpOutputBehaviour(shipStateB, 2947)));
-		
+		ShipState shipStateB = new ShipState(222222222, new Point2D.Double(8.16, 53.9), 0, 10);
+		scheduler.registerAgent(new Agent(scheduler, new LinearDrivingBehaviour(shipStateB),
+				new NmeaPosReportUdpOutputBehaviour(shipStateB, 2947)));
+
 		scheduler.start();
-		
+
 		try {
 			TimeUnit.SECONDS.sleep(15);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		scheduler.stop();
 	}
 
-	//private EventBus eventBus = EventBus.getDefault();
+	// private EventBus eventBus = EventBus.getDefault();
 	private ExecutorService executorService = null;
 	private EventBus eventBus = null;
 
@@ -63,9 +67,9 @@ public class Scheduler implements Runnable {
 
 	private volatile CountDownLatch latch = null;
 	private AtomicBoolean RUNNING = new AtomicBoolean(true);
-	
+
 	private Thread worker = null;
-	
+
 	private LocalDateTime localDateTime_start = LocalDateTime.of(2020, Month.JANUARY, 1, 8, 0, 0);
 	private LocalDateTime localDateTime_current = LocalDateTime.of(2020, Month.JANUARY, 1, 8, 0, 0);
 
@@ -78,18 +82,15 @@ public class Scheduler implements Runnable {
 		worker.start();
 	}
 
-	
-
 	@Override
 	public void run() {
-		
-		
+
 		System.out.println("Start: \t" + localDateTime_start);
 		/*
 		 * loop
 		 */
 		while (RUNNING.get()) {
-			
+
 			Instant start = Instant.now();
 			latch = new CountDownLatch(registeredAgents.size());
 			Tick tick = new Tick(timeToAdd_ns, ChronoUnit.NANOS);
@@ -97,19 +98,20 @@ public class Scheduler implements Runnable {
 			try {
 				latch.await(schedulerConfiguration.timeout_s, TimeUnit.SECONDS);
 				localDateTime_current = localDateTime_current.with(tick.getTemporalAdjuster());
-				
+
 				long time_left_ns = (Instant.now().toEpochMilli() - start.toEpochMilli()) * 1_000_000;
-				if(schedulerConfiguration.getSimulationSpeed() < 1000 && (timeToAdd_ns - time_left_ns) > 0) {
-					TimeUnit.NANOSECONDS.sleep( (long)((timeToAdd_ns - time_left_ns) / schedulerConfiguration.getSimulationSpeed()) );
+				if (schedulerConfiguration.getSimulationSpeed() < 1000 && (timeToAdd_ns - time_left_ns) > 0) {
+					TimeUnit.NANOSECONDS.sleep(
+							(long) ((timeToAdd_ns - time_left_ns) / schedulerConfiguration.getSimulationSpeed()));
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 		System.out.println("End: \t" + localDateTime_current);
-		
+
 	}
-	
+
 	/**
 	 * stop the scheduler
 	 */
@@ -121,14 +123,15 @@ public class Scheduler implements Runnable {
 
 	@Subscribe
 	public void receiveTickAnswer(TickAnswer tickAnswer) {
-		if(registeredAgents.contains(tickAnswer.agent)) {
-			latch.countDown();		
+		if (registeredAgents.contains(tickAnswer.agent)) {
+			latch.countDown();
 		} else {
 			System.err.println("Received TickAnswer from unregistred Agent " + tickAnswer.agent);
 		}
 	}
 
-	/** register an {@link Agent} with this Scheduler
+	/**
+	 * register an {@link Agent} with this Scheduler
 	 * 
 	 * @param agent
 	 */
@@ -143,26 +146,21 @@ public class Scheduler implements Runnable {
 	 */
 	public Scheduler(SchedulerConfiguration config) {
 		this.schedulerConfiguration = config;
-		this.timeToAdd_ns = (int)(1_000_000_000 / this.schedulerConfiguration.freqency_Hz);
-		
+		this.timeToAdd_ns = (int) (1_000_000_000 / this.schedulerConfiguration.freqency_Hz);
+
 		this.executorService = Executors.newCachedThreadPool();
 		this.eventBus = EventBus.builder().executorService(executorService).installDefaultEventBus();
-		
-		
+
 		this.eventBus.register(this);
 	}
 
-
 	/**
 	 * returns this Scheduler's {@link SchedulerConfiguration}
+	 * 
 	 * @return
 	 */
 	public SchedulerConfiguration SchedulerConfiguration() {
 		return schedulerConfiguration;
 	}
-	
-	
-
 
 }
-
