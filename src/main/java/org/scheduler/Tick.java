@@ -4,6 +4,8 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalUnit;
 
+import org.apache.sis.referencing.GeodeticCalculator;
+
 public class Tick {
 	/*
 	 * the global tick counter is unique
