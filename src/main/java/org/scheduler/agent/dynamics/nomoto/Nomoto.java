@@ -21,20 +21,26 @@ import org.scheduler.util.Draw2DObjects;
 public class Nomoto {
 	public static void main(String[] args) {
 		
-//		GeometryFactory geoFactory = new GeometryFactory();
-//		Coordinate[] coordinates = new Coordinate[] {new Coordinate(-1,1),new Coordinate(1,1)};
-//		Geometry line = geoFactory.createLineString(coordinates);
-//		
-//		Geometry pointGeo = geoFactory.createPoint(new Coordinate(1.05, 1));
-//		pointGeo = pointGeo.buffer(0.1);
-//		
-//		Geometry out = line.intersection(pointGeo);
+		GeometryFactory geoFactory = new GeometryFactory();
+		Coordinate[] coordinates = new Coordinate[] {new Coordinate(-2,1),new Coordinate(2,1)};
+		Geometry line = geoFactory.createLineString(coordinates);
+		
+		Geometry pointGeo = geoFactory.createPoint(new Coordinate(0, -1));
+//		pointGeo = pointGeo.buffer(0);
+		
+		
+		double out = line.distance(pointGeo);
+		System.out.println("Distance: " + out);
+		
+		pointGeo.getCoordinate().setY(0);
+		out = line.distance(pointGeo);
+		System.out.println("Distance: " + out);
 		
 		ArrayList<Shape> shapeList = new ArrayList<>();
 		
 		//double[] xdot = new double[] {input[0], Kcurr,  x[0], x[1] , u, v, time, Kurs, steps_per_second};
         
-		double[] xdot = new double[] {0, 0,  500, 500 , 5.14 , 0, 0, 0, 1};
+		double[] xdot = new double[] {30, 0,  500, 500 , 4 , 0, 0, 0, 1};
 		
 //		double[] out = funcKT(xdot);
 //		
@@ -51,9 +57,9 @@ public class Nomoto {
 			Ellipse2D point = new Ellipse2D.Double(out4[2],out4[3], 1, 1);
 			shapeList.add(point);
 			
-			if(i == 20) {
-				out4[0] = 0;
-			}
+//			if(i == 20) {
+//				out4[0] = 0;
+//			}
 		}
 		
 		Ellipse2D point = new Ellipse2D.Double(500,500, 1, 1);
@@ -90,19 +96,19 @@ public class Nomoto {
 	public static double[] funcKT(double[] input) {
 		double steps_per_second = input[8];
 		// Parameters estimated for Fossen's container model
-		double K = 30.486 * Math.min(Math.abs(input[0]),90) / 90 ;
-		double T = 5;
+		double K = 4.0 * Math.min(Math.abs(input[0]),45) / 45 ;
+		double T = 8;
 		double model_speed_kn = 13.6;
 		double speed_kn = 13.6;
 		double speed_ms = speed_kn * 0.51444444444;
 		
 		// adjust KT to speed
-		K= K * speed_kn/model_speed_kn /steps_per_second;
-		T= T * model_speed_kn/speed_kn;
+		K= K * speed_kn/model_speed_kn ;
+		T= T * model_speed_kn/speed_kn ;
 		
 		double[] x = new double[] { input[2], input[3] }; //position vector
 		
-		double Kinc = K/T ;
+		double Kinc = K/T;
 		double Kcurr = input[1]; //current yaw rate (deg), psi
 		double Kurs = input[7];
 		
